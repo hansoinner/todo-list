@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="A simple and modern Todo List application built with HTML, CSS and JavaScript."
+    >
+
+    <title>Todo List</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <section class="todo-container" aria-labelledby="todo-title">
+
+            <header class="todo-header">
+                <p class="eyebrow">Stay organized</p>
+
+                <h1 id="todo-title">Todo List</h1>
+
+                <p class="todo-subtitle">
+                    Keep track of your tasks and get things done.
+                </p>
+            </header>
+
+
+            <form class="todo-form" id="todo-form">
+
+                <div class="input-group">
+
+                    <label for="todo-input">
+                        Add a new task
+                    </label>
+
+                    <div class="input-row">
+
+                        <input
+                            type="text"
+                            id="todo-input"
+                            name="todo"
+                            placeholder="What needs to be done?"
+                            maxlength="100"
+                            autocomplete="off"
+                            required
+                        >
+
+                        <button type="submit" class="add-button">
+                            Add Task
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <section class="todo-section" aria-labelledby="tasks-title">
+
+                <div class="todo-section-header">
+
+                    <h2 id="tasks-title">Your Tasks</h2>
+
+                    <span class="task-count" id="task-count">
+                        0 tasks remaining
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="empty-state"
+                    id="empty-state"
+                    aria-live="polite"
+                >
+                    <h3>No tasks yet</h3>
+
+                    <p>
+                        Add your first task to get started.
+                    </p>
+                </div>
+
+
+                <ul
+                    class="todo-list"
+                    id="todo-list"
+                    aria-label="Todo items"
+                >
+                </ul>
+
+            </section>
+
+
+            <footer class="todo-footer">
+
+                <button
+                    type="button"
+                    class="clear-button"
+                    id="clear-completed"
+                >
+                    Clear completed
+                </button>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
