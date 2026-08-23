@@ -35,6 +35,26 @@ function addTodo(text) {
 
 
 // =========================================================
+// TOGGLE TODO
+// =========================================================
+
+function toggleTodo(todoId) {
+
+    const todo = todos.find(function (todo) {
+        return todo.id === todoId;
+    });
+
+    if (!todo) {
+        return;
+    }
+
+    todo.completed = !todo.completed;
+
+    renderTodos();
+}
+
+
+// =========================================================
 // RENDER TODOS
 // =========================================================
 
@@ -48,7 +68,44 @@ function renderTodos() {
 
         listItem.className = "todo-item";
 
-        listItem.textContent = todo.text;
+        if (todo.completed) {
+            listItem.classList.add("completed");
+        }
+
+
+        const checkbox = document.createElement("button");
+
+        checkbox.type = "button";
+
+        checkbox.className = "todo-checkbox";
+
+        checkbox.setAttribute(
+            "aria-label",
+            todo.completed
+                ? `Mark "${todo.text}" as incomplete`
+                : `Mark "${todo.text}" as completed`
+        );
+
+        checkbox.dataset.todoId = todo.id;
+
+
+        const todoText = document.createElement("span");
+
+        todoText.className = "todo-text";
+
+        todoText.textContent = todo.text;
+
+
+        checkbox.addEventListener("click", function () {
+
+            toggleTodo(todo.id);
+
+        });
+
+
+        listItem.appendChild(checkbox);
+
+        listItem.appendChild(todoText);
 
         todoList.appendChild(listItem);
     });

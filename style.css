@@ -467,3 +467,126 @@ button {
         transition-duration: 0.01ms !important;
     }
 }
+/* =========================================================
+   TODO ITEMS
+========================================================= */
+
+.todo-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 54px;
+
+    padding: 10px 12px;
+
+    background-color: var(--surface-color);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: var(--radius-small);
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition);
+}
+
+
+.todo-item:hover {
+    background-color: #f8fafc;
+
+    border-color: #cbd5e1;
+}
+
+
+/* =========================================================
+   TODO CHECKBOX
+========================================================= */
+
+.todo-checkbox {
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: 22px;
+    height: 22px;
+
+    background-color: var(--surface-color);
+
+    border: 2px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition);
+}
+
+
+.todo-checkbox:hover {
+    border-color: var(--primary-color);
+}
+
+
+.todo-checkbox:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.2);
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   CHECKMARK
+========================================================= */
+
+.todo-item.completed .todo-checkbox {
+    background-color: var(--primary-color);
+
+    border-color: var(--primary-color);
+}
+
+
+.todo-item.completed .todo-checkbox::after {
+    content: "";
+
+    position: absolute;
+
+    top: 2px;
+    left: 6px;
+
+    width: 5px;
+    height: 10px;
+
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   TODO TEXT
+========================================================= */
+
+.todo-text {
+    min-width: 0;
+
+    color: var(--text-color);
+
+    overflow-wrap: anywhere;
+
+    transition:
+        color var(--transition),
+        text-decoration-color var(--transition);
+}
+
+
+.todo-item.completed .todo-text {
+    color: var(--text-muted);
+
+    text-decoration: line-through;
+
+    text-decoration-thickness: 2px;
+}
