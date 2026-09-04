@@ -24,9 +24,39 @@
             <form id="todo-form" class="todo-form">
                 <div class="input-group">
                     <label for="todo-input">Add a task</label>
+
                     <div class="input-row">
-                        <input type="text" id="todo-input" name="todo" placeholder="What needs to be done?" maxlength="100" autocomplete="off" required>
+                        <input
+                            type="text"
+                            id="todo-input"
+                            name="todo"
+                            placeholder="What needs to be done?"
+                            maxlength="100"
+                            autocomplete="off"
+                            required
+                        >
                         <button type="submit" class="add-button">Add Task</button>
+                    </div>
+
+                    <div class="task-options">
+                        <div class="select-group">
+                            <label for="todo-priority">Priority</label>
+                            <select id="todo-priority" name="priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <div class="select-group">
+                            <label for="todo-category">Category</label>
+                            <select id="todo-category" name="category">
+                                <option value="general" selected>General</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="learning">Learning</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </form>
