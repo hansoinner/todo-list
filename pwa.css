@@ -1,0 +1,132 @@
+/* =========================================================
+   PWA UX
+========================================================= */
+
+.pwa-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    min-height: 36px;
+}
+
+.pwa-install-button,
+#pwa-update-button {
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.pwa-install-button {
+    background: #2563eb;
+    color: #fff;
+}
+
+.pwa-install-button:hover,
+#pwa-update-button:hover {
+    transform: translateY(-1px);
+}
+
+.pwa-install-button:focus-visible,
+#pwa-update-button:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.3);
+    outline-offset: 3px;
+}
+
+.offline-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.update-banner {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: min(440px, calc(100vw - 40px));
+    padding: 16px;
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.update-banner.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.update-banner div {
+    display: grid;
+    gap: 3px;
+}
+
+.update-banner strong {
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+.update-banner span {
+    color: #64748b;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+#pwa-update-button {
+    flex: 0 0 auto;
+    background: #2563eb;
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .pwa-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .pwa-install-button,
+    .offline-status {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .update-banner {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+        gap: 12px;
+    }
+
+    #pwa-update-button {
+        padding: 9px 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pwa-install-button,
+    #pwa-update-button,
+    .update-banner {
+        transition: none;
+    }
+}
