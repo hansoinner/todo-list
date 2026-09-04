@@ -1,4 +1,4 @@
-const CACHE_NAME = "todo-list-v1";
+const CACHE_NAME = "todo-list-v2";
 const APP_SHELL = [
     "./",
     "./index.html",
@@ -10,6 +10,7 @@ const APP_SHELL = [
     "./data-transfer.css",
     "./shortcuts.css",
     "./tags.css",
+    "./pwa.css",
     "./toast.js",
     "./script.js",
     "./edit.js",
@@ -19,6 +20,7 @@ const APP_SHELL = [
     "./data-transfer.js",
     "./shortcuts.js",
     "./tags.js",
+    "./pwa.js",
     "./manifest.json"
 ];
 
@@ -26,7 +28,6 @@ self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(APP_SHELL))
-            .then(() => self.skipWaiting())
     );
 });
 
@@ -38,6 +39,12 @@ self.addEventListener("activate", event => {
             ))
             .then(() => self.clients.claim())
     );
+});
+
+self.addEventListener("message", event => {
+    if (event.data?.type === "SKIP_WAITING") {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener("fetch", event => {
