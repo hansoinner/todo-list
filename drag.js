@@ -9,10 +9,15 @@
 
     if (!sortSelect || !todoList) return;
 
-    const manualOption = document.createElement("option");
-    manualOption.value = "manual";
-    manualOption.textContent = "Custom order";
-    sortSelect.appendChild(manualOption);
+    const manualOption = sortSelect.querySelector('option[value="manual"]');
+
+    if (!manualOption) {
+        const option = document.createElement("option");
+        option.value = "manual";
+        option.textContent = "Custom order";
+        sortSelect.appendChild(option);
+    }
+
     sortSelect.value = "manual";
     sortSelect.dispatchEvent(new Event("change"));
 
