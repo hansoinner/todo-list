@@ -1,5 +1,7 @@
 const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
+const priorityInput = document.querySelector("#todo-priority");
+const categoryInput = document.querySelector("#todo-category");
 const todoList = document.querySelector("#todo-list");
 const taskCount = document.querySelector("#task-count");
 const clearCompletedButton = document.querySelector(".clear-completed");
@@ -20,8 +22,8 @@ function loadTodos() {
                 id: todo.id || Date.now() + Math.random(),
                 text: String(todo.text || "").trim(),
                 completed: Boolean(todo.completed),
-                priority: todo.priority || "medium",
-                category: todo.category || "general",
+                priority: ["low", "medium", "high"].includes(todo.priority) ? todo.priority : "medium",
+                category: ["general", "work", "personal", "learning"].includes(todo.category) ? todo.category : "general",
                 createdAt: todo.createdAt || new Date().toISOString()
             };
         }).filter(function (todo) {
@@ -37,19 +39,19 @@ function saveTodos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
 
-function createTodo(text) {
+function createTodo(text, priority, category) {
     return {
         id: Date.now() + Math.random(),
         text: text,
         completed: false,
-        priority: "medium",
-        category: "general",
+        priority: priority,
+        category: category,
         createdAt: new Date().toISOString()
     };
 }
 
-function addTodo(text) {
-    todos.unshift(createTodo(text));
+function addTodo(text, priority, category) {
+    todos.unshift(createTodo(text, priority, category));
     saveTodos();
     renderTodos();
 }
@@ -335,11 +337,15 @@ todoForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const text = todoInput.value.trim();
+    const priority = priorityInput.value;
+    const category = categoryInput.value;
 
     if (text === "") return;
 
-    addTodo(text);
+    addTodo(text, priority, category);
     todoInput.value = "";
+    priorityInput.value = "medium";
+    categoryInput.value = "general";
     todoInput.focus();
 });
 
