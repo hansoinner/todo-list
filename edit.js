@@ -1,5 +1,5 @@
 /* =========================================================
-   EDIT TASK METADATA
+   COMPLETE TASK EDITOR
 ========================================================= */
 
 (function () {
@@ -9,8 +9,8 @@
 
     function loadTodos() {
         try {
-            const todos = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            return Array.isArray(todos) ? todos : [];
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            return Array.isArray(data) ? data : [];
         } catch (error) {
             console.error("Could not load todos for editing:", error);
             return [];
@@ -31,38 +31,41 @@
         return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
     }
 
-    function createSelect(className, label, options, selectedValue) {
+    function normalizeTags(value) {
+        return [...new Set(String(value || "")
+            .split(",")
+            .map(tag => tag.trim().toLowerCase().replace(/^#+/, ""))
+            .filter(tag => /^[a-z0-9_-]{1,20}$/.test(tag)))]
+            .slice(0, 10);
+    }
+
+    function createField(className, labelText, control) {
         const wrapper = document.createElement("div");
         wrapper.className = className;
+        const label = document.createElement("label");
+        label.textContent = labelText;
+        label.className = "todo-edit-label";
+        wrapper.append(label, control);
+        return wrapper;
+    }
+
+    function createSelect(label, options, selectedValue) {
         const select = document.createElement("select");
         select.setAttribute("aria-label", label);
-        options.forEach(function (option) {
+        options.forEach(option => {
             const element = document.createElement("option");
             element.value = option.value;
             element.textContent = option.label;
             element.selected = option.value === selectedValue;
             select.appendChild(element);
         });
-        wrapper.appendChild(select);
-        return { wrapper, select };
-    }
-
-    function createDateInput(value) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "date-group todo-edit-field";
-        const input = document.createElement("input");
-        input.type = "date";
-        input.value = isValidDateValue(value) ? value : "";
-        input.setAttribute("aria-label", "Due date");
-        wrapper.appendChild(input);
-        return { wrapper, input };
+        return select;
     }
 
     function createMetadataEditor(todo, todoItem) {
         const content = todoItem.querySelector(".todo-content");
         const actions = todoItem.querySelector(".todo-actions");
-        const editButton = actions.querySelector(".edit-button");
-        const deleteButton = actions.querySelector(".delete-button");
+        if (!content || !actions || content.classList.contains("todo-editing")) return;
 
         content.innerHTML = "";
         content.classList.add("todo-editing");
@@ -77,60 +80,103 @@
         const fields = document.createElement("div");
         fields.className = "todo-edit-fields";
 
-        const priority = createSelect("select-group todo-edit-field", "Priority", [
-            { value: "low", label: "Low" }, { value: "medium", label: "Medium" }, { value: "high", label: "High" }
+        const prioritySelect = createSelect("Priority", [
+            { value: "low", label: "Low" },
+            { value: "medium", label: "Medium" },
+            { value: "high", label: "High" }
         ], todo.priority);
 
-        const category = createSelect("select-group todo-edit-field", "Category", [
-            { value: "general", label: "General" }, { value: "work", label: "Work" }, { value: "personal", label: "Personal" }, { value: "learning", label: "Learning" }
+        const categorySelect = createSelect("Category", [
+            { value: "general", label: "General" },
+            { value: "work", label: "Work" },
+            { value: "personal", label: "Personal" },
+            { value: "learning", label: "Learning" }
         ], todo.category);
 
-        const dueDate = createDateInput(todo.dueDate);
-        fields.append(priority.wrapper, category.wrapper, dueDate.wrapper);
-        content.append(textInput, fields);
+        const dueDateInput = document.createElement("input");
+        dueDateInput.type = "date";
+        dueDateInput.value = isValidDateValue(todo.dueDate) ? todo.dueDate : "";
+        dueDateInput.setAttribute("aria-label", "Due date");
 
-        editButton.textContent = "Save";
-        editButton.setAttribute("aria-label", `Save ${todo.text}`);
-        deleteButton.textContent = "Cancel";
-        deleteButton.setAttribute("aria-label", `Cancel editing ${todo.text}`);
-        deleteButton.classList.add("cancel-edit-button");
+        const tagsInput = document.createElement("input");
+        tagsInput.type = "text";
+        tagsInput.value = Array.isArray(todo.tags) ? todo.tags.join(", ") : "";
+        tagsInput.maxLength = 220;
+        tagsInput.placeholder = "work, urgent, coding";
+        tagsInput.setAttribute("aria-label", "Tags");
 
-        textInput.focus();
-        textInput.select();
+        fields.append(
+            createField("todo-edit-field", "Priority", prioritySelect),
+            createField("todo-edit-field", "Category", categorySelect),
+            createField("todo-edit-field", "Due date", dueDateInput),
+            createField("todo-edit-field todo-edit-tags", "Tags", tagsInput)
+        );
 
-        function restore() { window.location.reload(); }
+        const hint = document.createElement("small");
+        hint.className = "todo-edit-hint";
+        hint.textContent = "Comma-separated · up to 10 tags";
+
+        content.append(textInput, fields, hint);
+
+        const saveButton = actions.querySelector(".edit-button");
+        const cancelButton = actions.querySelector(".delete-button");
+        saveButton.textContent = "Save";
+        saveButton.setAttribute("aria-label", `Save ${todo.text}`);
+        cancelButton.textContent = "Cancel";
+        cancelButton.setAttribute("aria-label", `Cancel editing ${todo.text}`);
+        cancelButton.classList.add("cancel-edit-button");
+
+        function restore() {
+            window.location.reload();
+        }
 
         function save() {
             const text = textInput.value.trim();
-            if (!text) { textInput.focus(); return; }
+            if (!text) {
+                textInput.focus();
+                return;
+            }
 
-            const selectedTodos = loadTodos();
-            const storedTodo = selectedTodos.find(function (item) { return String(item.id) === String(todo.id); });
-            if (!storedTodo) { restore(); return; }
+            const todos = loadTodos();
+            const storedTodo = todos.find(item => String(item.id) === String(todo.id));
+            if (!storedTodo) {
+                restore();
+                return;
+            }
 
             storedTodo.text = text;
-            storedTodo.priority = PRIORITIES.includes(priority.select.value) ? priority.select.value : "medium";
-            storedTodo.category = CATEGORIES.includes(category.select.value) ? category.select.value : "general";
-            storedTodo.dueDate = isValidDateValue(dueDate.input.value) ? dueDate.input.value : "";
+            storedTodo.priority = PRIORITIES.includes(prioritySelect.value) ? prioritySelect.value : "medium";
+            storedTodo.category = CATEGORIES.includes(categorySelect.value) ? categorySelect.value : "general";
+            storedTodo.dueDate = isValidDateValue(dueDateInput.value) ? dueDateInput.value : "";
+            storedTodo.tags = normalizeTags(tagsInput.value);
 
-            saveTodos(selectedTodos);
+            saveTodos(todos);
             notify("Task updated");
             restore();
         }
 
-        editButton.onclick = save;
-        deleteButton.onclick = restore;
+        saveButton.onclick = save;
+        cancelButton.onclick = restore;
 
-        textInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") save();
-            if (event.key === "Escape") restore();
-        });
-
-        [priority.select, category.select, dueDate.input].forEach(function (field) {
-            field.addEventListener("keydown", function (event) {
-                if (event.key === "Escape") restore();
+        const controls = [textInput, prioritySelect, categorySelect, dueDateInput, tagsInput];
+        controls.forEach(control => {
+            control.addEventListener("keydown", event => {
+                if (event.key === "Escape") {
+                    event.preventDefault();
+                    restore();
+                }
             });
         });
+
+        textInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                save();
+            }
+        });
+
+        textInput.focus();
+        textInput.select();
     }
 
     function handleEditClick(event) {
@@ -138,9 +184,10 @@
         if (!button) return;
         const todoItem = button.closest(".todo-item");
         if (!todoItem) return;
-        const todos = loadTodos();
-        const todo = todos.find(function (item) { return String(item.id) === String(todoItem.dataset.id); });
+
+        const todo = loadTodos().find(item => String(item.id) === String(todoItem.dataset.id));
         if (!todo) return;
+
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
