@@ -8,6 +8,7 @@
     <title>Todo List</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="drag.css">
+    <link rel="stylesheet" href="history.css">
 </head>
 
 <body>
@@ -74,7 +75,13 @@
                 </div>
             </form>
 
-            <div class="todo-header"><div><h2>Your Tasks</h2><p id="task-count" class="task-count">0 tasks remaining</p></div></div>
+            <div class="todo-header">
+                <div><h2>Your Tasks</h2><p id="task-count" class="task-count">0 tasks remaining</p></div>
+                <div class="history-controls" aria-label="Task history">
+                    <button id="undo-button" class="history-button" type="button" title="Undo (Ctrl/Cmd + Z)" aria-label="Nothing to undo" disabled>↶</button>
+                    <button id="redo-button" class="history-button" type="button" title="Redo (Ctrl/Cmd + Y)" aria-label="Nothing to redo" disabled>↷</button>
+                </div>
+            </div>
 
             <div class="task-search">
                 <label for="task-search-input">Search tasks</label>
@@ -119,5 +126,6 @@
     <script src="script.js"></script>
     <script src="edit.js"></script>
     <script src="drag.js"></script>
+    <script src="history.js"></script>
 </body>
 </html>
