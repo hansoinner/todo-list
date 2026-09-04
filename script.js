@@ -10,6 +10,21 @@ const taskCount = document.querySelector("#task-count");
 const clearCompletedButton = document.querySelector(".clear-completed");
 const filterButtons = document.querySelectorAll(".filter-button");
 
+const statTotal = document.querySelector("#stat-total");
+const statActive = document.querySelector("#stat-active");
+const statCompleted = document.querySelector("#stat-completed");
+const statRate = document.querySelector("#stat-rate");
+const statProgress = document.querySelector("#stat-progress");
+const statLow = document.querySelector("#stat-low");
+const statMedium = document.querySelector("#stat-medium");
+const statHigh = document.querySelector("#stat-high");
+const statGeneral = document.querySelector("#stat-general");
+const statWork = document.querySelector("#stat-work");
+const statPersonal = document.querySelector("#stat-personal");
+const statLearning = document.querySelector("#stat-learning");
+const priorityTotal = document.querySelector("#priority-total");
+const categoryTotal = document.querySelector("#category-total");
+
 const STORAGE_KEY = "todos";
 const todos = loadTodos();
 let currentFilter = "all";
@@ -20,7 +35,6 @@ let selectedPriority = "all";
 function loadTodos() {
     try {
         const storedTodos = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
         if (!Array.isArray(storedTodos)) return [];
 
         return storedTodos.map(function (todo) {
@@ -63,34 +77,23 @@ function addTodo(text, priority, category) {
 }
 
 function toggleTodo(todoId) {
-    const todo = todos.find(function (item) {
-        return item.id === todoId;
-    });
-
+    const todo = todos.find(function (item) { return item.id === todoId; });
     if (!todo) return;
-
     todo.completed = !todo.completed;
     saveTodos();
     renderTodos();
 }
 
 function deleteTodo(todoId) {
-    const todoIndex = todos.findIndex(function (todo) {
-        return todo.id === todoId;
-    });
-
+    const todoIndex = todos.findIndex(function (todo) { return todo.id === todoId; });
     if (todoIndex === -1) return;
-
     todos.splice(todoIndex, 1);
     saveTodos();
     renderTodos();
 }
 
 function editTodo(todoId) {
-    const todo = todos.find(function (item) {
-        return item.id === todoId;
-    });
-
+    const todo = todos.find(function (item) { return item.id === todoId; });
     if (!todo) return;
 
     const todoItem = document.querySelector(`[data-id="${todoId}"]`);
@@ -123,12 +126,10 @@ function editTodo(todoId) {
 
     function saveEdit() {
         const newText = input.value.trim();
-
         if (newText === "") {
             input.focus();
             return;
         }
-
         todo.text = newText;
         saveTodos();
         renderTodos();
@@ -148,87 +149,90 @@ function editTodo(todoId) {
 }
 
 function clearCompleted() {
-    const hasCompletedTodos = todos.some(function (todo) {
-        return todo.completed;
-    });
+    if (!todos.some(function (todo) { return todo.completed; })) return;
 
-    if (!hasCompletedTodos) return;
-
-    const remainingTodos = todos.filter(function (todo) {
-        return !todo.completed;
-    });
-
+    const remainingTodos = todos.filter(function (todo) { return !todo.completed; });
     todos.length = 0;
     todos.push(...remainingTodos);
-
     saveTodos();
     renderTodos();
 }
 
 function getFilteredTodos() {
     return todos.filter(function (todo) {
-        const matchesStatus =
-            currentFilter === "all" ||
+        const matchesStatus = currentFilter === "all" ||
             (currentFilter === "active" && !todo.completed) ||
             (currentFilter === "completed" && todo.completed);
-
         const matchesSearch = todo.text.toLowerCase().includes(searchTerm);
         const matchesCategory = selectedCategory === "all" || todo.category === selectedCategory;
         const matchesPriority = selectedPriority === "all" || todo.priority === selectedPriority;
-
         return matchesStatus && matchesSearch && matchesCategory && matchesPriority;
     });
 }
 
-function updateTaskCount() {
-    const activeTasks = todos.filter(function (todo) {
-        return !todo.completed;
+function updateTaskStatistics() {
+    const total = todos.length;
+    const completed = todos.filter(function (todo) { return todo.completed; }).length;
+    const active = total - completed;
+    const rate = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    statTotal.textContent = total;
+    statActive.textContent = active;
+    statCompleted.textContent = completed;
+    statRate.textContent = `${rate}%`;
+    statProgress.style.width = `${rate}%`;
+
+    const priorityCounts = { low: 0, medium: 0, high: 0 };
+    const categoryCounts = { general: 0, work: 0, personal: 0, learning: 0 };
+
+    todos.forEach(function (todo) {
+        priorityCounts[todo.priority]++;
+        categoryCounts[todo.category]++;
     });
 
+    statLow.textContent = priorityCounts.low;
+    statMedium.textContent = priorityCounts.medium;
+    statHigh.textContent = priorityCounts.high;
+    statGeneral.textContent = categoryCounts.general;
+    statWork.textContent = categoryCounts.work;
+    statPersonal.textContent = categoryCounts.personal;
+    statLearning.textContent = categoryCounts.learning;
+    priorityTotal.textContent = total;
+    categoryTotal.textContent = total;
+}
+
+function updateTaskCount() {
+    const activeTasks = todos.filter(function (todo) { return !todo.completed; });
     const count = activeTasks.length;
     taskCount.textContent = `${count} task${count !== 1 ? "s" : ""} remaining`;
 }
 
 function updateClearCompletedButton() {
-    const hasCompletedTodos = todos.some(function (todo) {
-        return todo.completed;
-    });
-
-    clearCompletedButton.disabled = !hasCompletedTodos;
+    clearCompletedButton.disabled = !todos.some(function (todo) { return todo.completed; });
 }
 
 function setFilter(filter) {
     currentFilter = filter;
-
     filterButtons.forEach(function (button) {
         const isActive = button.dataset.filter === filter;
         button.classList.toggle("active", isActive);
         button.setAttribute("aria-pressed", String(isActive));
     });
-
     renderTodos();
 }
 
 function getPriorityLabel(priority) {
-    const labels = { low: "Low", medium: "Medium", high: "High" };
-    return labels[priority] || labels.medium;
+    return { low: "Low", medium: "Medium", high: "High" }[priority] || "Medium";
 }
 
 function getCategoryLabel(category) {
-    const labels = { general: "General", work: "Work", personal: "Personal", learning: "Learning" };
-    return labels[category] || labels.general;
+    return { general: "General", work: "Work", personal: "Personal", learning: "Learning" }[category] || "General";
 }
 
 function formatCreatedDate(createdAt) {
     const date = new Date(createdAt);
-
     if (Number.isNaN(date.getTime())) return "";
-
-    return new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    }).format(date);
+    return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
 }
 
 function renderEmptyState() {
@@ -246,20 +250,13 @@ function renderEmptyState() {
         message = "Completed tasks will appear here.";
     }
 
-    todoList.innerHTML = `
-        <li class="empty-state">
-            <div class="empty-icon" aria-hidden="true">✓</div>
-            <h3>${title}</h3>
-            <p>${message}</p>
-        </li>
-    `;
+    todoList.innerHTML = `<li class="empty-state"><div class="empty-icon" aria-hidden="true">✓</div><h3>${title}</h3><p>${message}</p></li>`;
 }
 
 function createTodoElement(todo) {
     const todoItem = document.createElement("li");
     todoItem.classList.add("todo-item");
     todoItem.dataset.id = todo.id;
-
     if (todo.completed) todoItem.classList.add("completed");
 
     todoItem.innerHTML = `
@@ -278,23 +275,12 @@ function createTodoElement(todo) {
         <div class="todo-actions">
             <button class="edit-button" type="button" aria-label="Edit ${todo.text}">Edit</button>
             <button class="delete-button" type="button" aria-label="Delete ${todo.text}">Delete</button>
-        </div>
-    `;
+        </div>`;
 
     todoItem.querySelector(".todo-text").textContent = todo.text;
-
-    todoItem.querySelector('input[type="checkbox"]').addEventListener("change", function () {
-        toggleTodo(todo.id);
-    });
-
-    todoItem.querySelector(".edit-button").addEventListener("click", function () {
-        editTodo(todo.id);
-    });
-
-    todoItem.querySelector(".delete-button").addEventListener("click", function () {
-        deleteTodo(todo.id);
-    });
-
+    todoItem.querySelector('input[type="checkbox"]').addEventListener("change", function () { toggleTodo(todo.id); });
+    todoItem.querySelector(".edit-button").addEventListener("click", function () { editTodo(todo.id); });
+    todoItem.querySelector(".delete-button").addEventListener("click", function () { deleteTodo(todo.id); });
     return todoItem;
 }
 
@@ -305,22 +291,19 @@ function renderTodos() {
     if (filteredTodos.length === 0) {
         renderEmptyState();
     } else {
-        filteredTodos.forEach(function (todo) {
-            todoList.appendChild(createTodoElement(todo));
-        });
+        filteredTodos.forEach(function (todo) { todoList.appendChild(createTodoElement(todo)); });
     }
 
     updateTaskCount();
     updateClearCompletedButton();
+    updateTaskStatistics();
 }
 
 todoForm.addEventListener("submit", function (event) {
     event.preventDefault();
-
     const text = todoInput.value.trim();
     const priority = priorityInput.value;
     const category = categoryInput.value;
-
     if (text === "") return;
 
     addTodo(text, priority, category);
@@ -348,9 +331,7 @@ priorityFilter.addEventListener("change", function () {
 clearCompletedButton.addEventListener("click", clearCompleted);
 
 filterButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        setFilter(button.dataset.filter);
-    });
+    button.addEventListener("click", function () { setFilter(button.dataset.filter); });
 });
 
 saveTodos();
