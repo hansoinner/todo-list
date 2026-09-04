@@ -35,6 +35,12 @@ let selectedCategory = "all";
 let selectedPriority = "all";
 let currentSort = "newest";
 
+function showToast(message, type = "success") {
+    window.dispatchEvent(new CustomEvent("todo:toast", {
+        detail: { message, type }
+    }));
+}
+
 function loadTodos() {
     try {
         const storedTodos = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -74,6 +80,7 @@ function addTodo(text, priority, category, dueDate) {
     todos.unshift(createTodo(text, priority, category, dueDate));
     saveTodos();
     renderTodos();
+    showToast("Task added");
 }
 
 function toggleTodo(todoId) {
@@ -82,6 +89,7 @@ function toggleTodo(todoId) {
     todo.completed = !todo.completed;
     saveTodos();
     renderTodos();
+    showToast(todo.completed ? "Task completed" : "Task marked active");
 }
 
 function deleteTodo(todoId) {
@@ -90,6 +98,7 @@ function deleteTodo(todoId) {
     todos.splice(todoIndex, 1);
     saveTodos();
     renderTodos();
+    showToast("Task deleted", "info");
 }
 
 function editTodo(todoId) {
@@ -123,6 +132,7 @@ function editTodo(todoId) {
         todo.text = newText;
         saveTodos();
         renderTodos();
+        showToast("Task updated");
     }
     function cancelEdit() { renderTodos(); }
     editButton.onclick = saveEdit;
@@ -140,6 +150,7 @@ function clearCompleted() {
     todos.push(...remainingTodos);
     saveTodos();
     renderTodos();
+    showToast("Completed tasks cleared", "info");
 }
 
 function getFilteredTodos() {
