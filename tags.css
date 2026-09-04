@@ -1,0 +1,46 @@
+/* =========================================================
+   TASK TAGS
+========================================================= */
+
+.tag-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.tag-group small {
+    color: var(--muted);
+    font-size: 0.72rem;
+}
+
+.todo-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.todo-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.todo-item[hidden] {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .tag-filter {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .todo-tag { transition: none; }
+}
