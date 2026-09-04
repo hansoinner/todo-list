@@ -1,4 +1,4 @@
-const CACHE_NAME = "todo-list-v4";
+const CACHE_NAME = "todo-list-v5";
 const APP_SHELL = [
     "./",
     "./index.html",
@@ -10,6 +10,7 @@ const APP_SHELL = [
     "./data-transfer.css",
     "./shortcuts.css",
     "./tags.css",
+    "./edit.css",
     "./pwa.css",
     "./due-date.css",
     "./toast.js",
