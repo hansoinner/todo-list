@@ -187,11 +187,46 @@ function getPriorityLabel(priority) { return { low: "Low", medium: "Medium", hig
 function getCategoryLabel(category) { return { general: "General", work: "Work", personal: "Personal", learning: "Learning" }[category] || "General"; }
 function formatCreatedDate(createdAt) { const date = new Date(createdAt); return Number.isNaN(date.getTime()) ? "" : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date); }
 function formatDueDate(dueDate) { return !isValidDateValue(dueDate) ? "" : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${dueDate}T00:00:00`)); }
-function isOverdue(todo) {
-    if (todo.completed || !isValidDateValue(todo.dueDate)) return false;
-    const today = new Date(); const value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`; return todo.dueDate < value;
+
+function getLocalDateValue(date = new Date()) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
-function getDueDateMarkup(todo) { if (!todo.dueDate) return ""; const overdue = isOverdue(todo); return `<span class="todo-due-date${overdue ? " overdue" : ""}">${overdue ? "Overdue" : "Due"}: ${formatDueDate(todo.dueDate)}</span>`; }
+
+function getDueDateStatus(todo) {
+    if (todo.completed || !isValidDateValue(todo.dueDate)) return "";
+
+    const today = getLocalDateValue();
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const tomorrow = getLocalDateValue(tomorrowDate);
+
+    if (todo.dueDate < today) return "overdue";
+    if (todo.dueDate === today) return "today";
+    if (todo.dueDate === tomorrow) return "tomorrow";
+    return "upcoming";
+}
+
+function isOverdue(todo) {
+    return getDueDateStatus(todo) === "overdue";
+}
+
+function getDueDateMarkup(todo) {
+    if (!isValidDateValue(todo.dueDate)) return "";
+
+    const status = getDueDateStatus(todo);
+    const statusLabels = {
+        overdue: "Overdue",
+        today: "Today",
+        tomorrow: "Tomorrow",
+        upcoming: "Due"
+    };
+    const label = statusLabels[status] || "Due";
+    const date = formatDueDate(todo.dueDate);
+    const completedClass = todo.completed ? " completed" : "";
+
+    return `<span class="todo-due-date ${status}${completedClass}" title="Due ${date}" aria-label="${label}: ${date}"><span class="due-status-label">${label}</span><span class="due-date-value">${date}</span></span>`;
+}
+
 function getTagsMarkup(todo) { return todo.tags.length ? `<span class="todo-tags">${todo.tags.map(tag => `<span class="todo-tag">#${tag}</span>`).join("")}</span>` : ""; }
 
 function renderEmptyState() {
