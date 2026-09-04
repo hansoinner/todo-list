@@ -1,0 +1,98 @@
+/* =========================================================
+   TOAST NOTIFICATIONS
+========================================================= */
+
+.toast-container {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(360px, calc(100vw - 2rem));
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.8rem;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: auto;
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.toast.is-hiding {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+}
+
+.toast-success {
+    border-color: color-mix(in srgb, var(--success) 45%, var(--border));
+}
+
+.toast-info {
+    border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+.toast-error {
+    border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+}
+
+.toast-message {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.toast-close {
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.toast-close:hover {
+    background: var(--surface-muted);
+    color: var(--text);
+}
+
+.toast-close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    .toast-container {
+        top: 0.75rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        transition: none;
+    }
+}
