@@ -130,3 +130,56 @@
         transition: none;
     }
 }
+
+/* =========================================================
+   DUE DATE STATUS
+========================================================= */
+
+.todo-due-date {
+    gap: 5px;
+    font-weight: 800;
+}
+
+.todo-due-date .due-status-label {
+    font-weight: 850;
+}
+
+.todo-due-date .due-date-value {
+    font-weight: 650;
+    opacity: 0.8;
+}
+
+.todo-due-date.today {
+    color: var(--primary);
+    background: var(--primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+}
+
+.todo-due-date.tomorrow {
+    color: #7c3aed;
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+}
+
+.todo-due-date.upcoming {
+    color: #475569;
+    background: #f1f5f9;
+}
+
+.todo-due-date.overdue {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border: 1px solid #fecaca;
+}
+
+.todo-item.completed .todo-due-date.completed {
+    color: #94a3b8;
+    background: transparent;
+    border-color: transparent;
+}
+
+@media (max-width: 480px) {
+    .todo-due-date .due-date-value {
+        display: none;
+    }
+}
