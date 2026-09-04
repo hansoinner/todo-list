@@ -1,0 +1,42 @@
+/* =========================================================
+   DRAG AND DROP TASK ORDERING
+========================================================= */
+
+.todo-item[draggable="true"] {
+    cursor: grab;
+}
+
+.todo-item[draggable="true"] .todo-actions,
+.todo-item[draggable="true"] input,
+.todo-item[draggable="true"] select,
+.todo-item[draggable="true"] button {
+    cursor: pointer;
+}
+
+.todo-item.dragging {
+    opacity: 0.45;
+    transform: scale(0.99);
+    cursor: grabbing;
+}
+
+.todo-item.drag-over {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.todo-item.drag-over::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 14px;
+    right: 14px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .todo-item.dragging {
+        transform: none;
+    }
+}
