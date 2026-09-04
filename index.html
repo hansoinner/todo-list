@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,19 @@
     <title>Todo List</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
     <main class="app">
+
         <header class="app-header">
             <p class="eyebrow">Simple productivity</p>
             <h1>Todo List</h1>
             <p class="subtitle">Organize your tasks and stay focused.</p>
         </header>
+
         <section class="todo-card" aria-label="Todo List">
+
             <form id="todo-form" class="todo-form">
                 <div class="input-group">
                     <label for="todo-input">Add a task</label>
@@ -24,12 +30,14 @@
                     </div>
                 </div>
             </form>
+
             <div class="todo-header">
                 <div>
                     <h2>Your Tasks</h2>
                     <p id="task-count" class="task-count">0 tasks remaining</p>
                 </div>
             </div>
+
             <div class="todo-controls">
                 <div class="todo-filters" role="group" aria-label="Filter tasks">
                     <button type="button" class="filter-button active" data-filter="all" aria-pressed="true">All</button>
@@ -38,9 +46,14 @@
                 </div>
                 <button type="button" class="clear-completed">Clear completed</button>
             </div>
+
             <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+
         </section>
+
     </main>
+
     <script src="script.js"></script>
+
 </body>
 </html>
