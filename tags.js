@@ -10,15 +10,19 @@
     function normalizeTags(value) {
         return [...new Set(String(value || "").split(",").map(tag => tag.trim().toLowerCase().replace(/^#+/, "")).filter(tag => /^[a-z0-9_-]{1,20}$/.test(tag)))].slice(0, 10);
     }
-
     function load() {
-        try {
-            const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            return Array.isArray(data) ? data : [];
-        } catch (error) { return []; }
+        try { const data = JSON.parse(localStorage.getItem(STORAGE_KEY)); return Array.isArray(data) ? data : []; }
+        catch (error) { return []; }
     }
-
     function save(todos) { localStorage.setItem(STORAGE_KEY, JSON.stringify(todos)); }
+
+    function annotateTasks() {
+        const todos = load();
+        todoList.querySelectorAll(".todo-item").forEach(item => {
+            const todo = todos.find(task => String(task.id) === String(item.dataset.id));
+            item.dataset.tags = Array.isArray(todo?.tags) ? todo.tags.join(",") : "";
+        });
+    }
 
     function createInput() {
         if (!form || document.querySelector("#todo-tags")) return;
@@ -30,9 +34,8 @@
         options.appendChild(group);
         form.addEventListener("submit", function () {
             const input = document.querySelector("#todo-tags");
-            if (!input) return;
             const todos = load();
-            if (!todos.length) return;
+            if (!input || !todos.length) return;
             todos[0].tags = normalizeTags(input.value);
             save(todos);
             input.value = "";
@@ -61,8 +64,8 @@
     }
 
     function applyFilter() {
-        const select = document.querySelector("#filter-tag");
-        const selected = select ? select.value : "all";
+        annotateTasks();
+        const selected = document.querySelector("#filter-tag")?.value || "all";
         todoList.querySelectorAll(".todo-item").forEach(item => {
             const tags = (item.dataset.tags || "").split(",").filter(Boolean);
             item.hidden = selected !== "all" && !tags.includes(selected);
@@ -71,6 +74,7 @@
 
     createInput();
     createFilter();
+    annotateTasks();
     window.addEventListener("todo:rendered", function () {
         refreshFilterOptions();
         applyFilter();
