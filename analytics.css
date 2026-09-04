@@ -1,0 +1,65 @@
+/* =========================================================
+   ANALYTICS DASHBOARD
+========================================================= */
+
+.analytics-dashboard {
+    margin-bottom: 30px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--border);
+}
+
+.analytics-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.analytics-heading h2 { font-size: 1.2rem; letter-spacing: -0.02em; }
+.analytics-heading p { margin-top: 3px; color: var(--muted); font-size: 0.8rem; }
+
+.analytics-period { padding: 7px 10px; color: var(--muted); background: var(--surface-muted); border: 1px solid var(--border); border-radius: 9px; font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
+
+.analytics-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.analytics-kpi { min-width: 0; padding: 15px; background: var(--surface-muted); border: 1px solid var(--border); border-radius: 13px; }
+.analytics-kpi-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.72rem; font-weight: 750; }
+.analytics-kpi-value { display: block; font-size: 1.45rem; line-height: 1; letter-spacing: -0.04em; }
+.analytics-kpi-note { display: block; margin-top: 7px; color: var(--muted); font-size: 0.68rem; }
+.analytics-kpi.danger .analytics-kpi-value { color: var(--danger); }
+.analytics-kpi.primary .analytics-kpi-value { color: var(--primary); }
+.analytics-kpi.success .analytics-kpi-value { color: var(--success); }
+
+.analytics-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr); gap: 12px; }
+.analytics-card { min-width: 0; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 13px; }
+.analytics-card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.analytics-card-header h3 { font-size: 0.86rem; }
+.analytics-card-header span { color: var(--muted); font-size: 0.68rem; font-weight: 750; }
+
+.trend-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: end; gap: 8px; height: 145px; padding-top: 8px; }
+.trend-day { display: flex; min-width: 0; height: 100%; flex-direction: column; justify-content: flex-end; align-items: center; gap: 7px; }
+.trend-bars { display: flex; align-items: flex-end; justify-content: center; gap: 3px; width: 100%; height: 112px; border-bottom: 1px solid var(--border); }
+.trend-bar { width: min(16px, 35%); min-height: 2px; border-radius: 5px 5px 0 0; background: var(--primary); transition: height 220ms ease; }
+.trend-bar.completed { background: var(--success); }
+.trend-label { color: var(--muted); font-size: 0.64rem; font-weight: 750; }
+.trend-value { color: var(--text); font-size: 0.6rem; font-weight: 800; }
+
+.analytics-list { display: flex; flex-direction: column; gap: 11px; }
+.analytics-list-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.analytics-list-label { color: var(--muted); font-size: 0.73rem; font-weight: 700; }
+.analytics-list-value { color: var(--text); font-size: 0.75rem; font-weight: 850; }
+.analytics-progress { grid-column: 1 / -1; height: 6px; overflow: hidden; background: var(--surface-muted); border-radius: 999px; }
+.analytics-progress span { display: block; width: 0; height: 100%; background: var(--primary); border-radius: inherit; transition: width 220ms ease; }
+.analytics-progress.success span { background: var(--success); }
+
+.analytics-empty { padding: 22px 8px; color: var(--muted); text-align: center; font-size: 0.78rem; }
+
+@media (max-width: 700px) {
+    .analytics-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .analytics-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .analytics-heading { align-items: flex-start; flex-direction: column; }
+    .analytics-period { width: 100%; text-align: center; }
+    .trend-chart { gap: 4px; }
+    .trend-bars { gap: 2px; }
+    .trend-bar { width: 40%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trend-bar, .analytics-progress span { transition: none; }
+}
