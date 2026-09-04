@@ -133,6 +133,67 @@
         });
     }
 
+    function getCategory(todo) {
+        const category = String(todo.category || "general").toLowerCase();
+        return ["general", "work", "personal", "learning"].includes(category) ? category : "general";
+    }
+
+    function getPriority(todo) {
+        const priority = String(todo.priority || "medium").toLowerCase();
+        return ["low", "medium", "high"].includes(priority) ? priority : "medium";
+    }
+
+    function filterByDimension(value, type) {
+        const select = document.querySelector(type === "category" ? "#filter-category" : "#filter-priority");
+        if (!select) return;
+        select.value = value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        document.querySelector("#todo-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderCategoryPriority(todos) {
+        const categoryContainer = $("#category-analytics");
+        const priorityContainer = $("#priority-analytics");
+        if (!categoryContainer || !priorityContainer) return;
+
+        const categories = [
+            { key: "work", label: "Work" },
+            { key: "personal", label: "Personal" },
+            { key: "learning", label: "Learning" },
+            { key: "general", label: "General" }
+        ];
+        const priorities = [
+            { key: "high", label: "High" },
+            { key: "medium", label: "Medium" },
+            { key: "low", label: "Low" }
+        ];
+
+        const categoryCounts = Object.fromEntries(categories.map(item => [item.key, 0]));
+        const priorityCounts = Object.fromEntries(priorities.map(item => [item.key, 0]));
+        todos.forEach(todo => {
+            categoryCounts[getCategory(todo)]++;
+            priorityCounts[getPriority(todo)]++;
+        });
+
+        const total = todos.length;
+        const categoryTotal = Math.max(1, total);
+        const categoryParts = categories.map(item => ({ ...item, count: categoryCounts[item.key], percent: total ? Math.round(categoryCounts[item.key] / total * 100) : 0 }));
+        const categoryGradient = categoryParts.reduce((parts, item, index) => {
+            const start = categoryParts.slice(0, index).reduce((sum, part) => sum + part.percent, 0);
+            const end = start + item.percent;
+            parts.push(`var(--analytics-category-${item.key}) ${start}% ${end}%`);
+            return parts;
+        }, []).join(", ");
+
+        categoryContainer.innerHTML = `<div class="analytics-dimension-layout"><button type="button" class="analytics-donut" style="--donut-gradient:${categoryGradient || "var(--surface-muted) 0% 100%"}" aria-label="Task category distribution: ${categoryParts.map(item => `${item.label} ${item.percent}%`).join(", ")}"><span class="analytics-donut-center"><strong>${total}</strong><small>tasks</small></span></button><div class="analytics-dimension-legend">${categoryParts.map(item => `<button type="button" class="analytics-dimension-row" data-category-filter="${item.key}" aria-label="Filter by ${item.label}: ${item.count} tasks"><span class="analytics-legend-label"><i class="analytics-legend-dot category-${item.key}"></i>${item.label}</span><strong>${item.count}</strong><span class="analytics-percent">${item.percent}%</span></button>`).join("")}</div></div><p class="analytics-chart-hint">Select a category to filter your tasks.</p>`;
+
+        const maxPriority = Math.max(1, ...priorities.map(item => priorityCounts[item.key]));
+        priorityContainer.innerHTML = `<div class="analytics-bar-list">${priorities.map(item => { const count = priorityCounts[item.key]; const percent = total ? Math.round(count / total * 100) : 0; const width = Math.round(count / maxPriority * 100); return `<button type="button" class="analytics-bar-row" data-priority-filter="${item.key}" aria-label="Filter by ${item.label} priority: ${count} tasks"><span class="analytics-bar-label"><i class="analytics-legend-dot priority-${item.key}"></i>${item.label}</span><span class="analytics-bar-track"><span class="analytics-bar-fill priority-${item.key}" style="width:${width}%"></span></span><strong>${count}</strong><small>${percent}%</small></button>`; }).join("")}</div><p class="analytics-chart-hint">Select a priority to filter your tasks.</p>`;
+
+        categoryContainer.querySelectorAll("[data-category-filter]").forEach(button => button.addEventListener("click", () => filterByDimension(button.dataset.categoryFilter, "category")));
+        priorityContainer.querySelectorAll("[data-priority-filter]").forEach(button => button.addEventListener("click", () => filterByDimension(button.dataset.priorityFilter, "priority")));
+    }
+
     function renderProductivity(todos) {
         const today = dateValue();
         const active = todos.filter(todo => !todo.completed).length;
@@ -181,6 +242,7 @@
         renderKpis(todos);
         renderTrend(todos);
         renderProductivity(todos);
+        renderCategoryPriority(todos);
     }
 
     const periodSelect = $("#analytics-period");
