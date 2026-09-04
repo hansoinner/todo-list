@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,8 +18,8 @@
     <link rel="stylesheet" href="edit.css">
     <link rel="stylesheet" href="pwa.css">
     <link rel="stylesheet" href="due-date.css">
+    <link rel="stylesheet" href="analytics.css">
 </head>
-
 <body>
     <main class="app">
         <header class="app-header">
@@ -30,11 +29,37 @@
         </header>
 
         <section class="todo-card" aria-label="Todo List">
-            <section class="stats-dashboard" aria-labelledby="stats-title">
-                <div class="stats-heading">
-                    <div><p class="section-eyebrow">Overview</p><h2 id="stats-title">Task Statistics</h2></div>
-                    <span class="stats-live" aria-hidden="true">Live</span>
+            <section id="analytics-dashboard" class="analytics-dashboard" aria-labelledby="analytics-title">
+                <div class="analytics-heading">
+                    <div><p class="section-eyebrow">Insights</p><h2 id="analytics-title">Dashboard &amp; Analytics</h2><p>Understand your workload and productivity at a glance.</p></div>
+                    <span class="analytics-period">Last 7 days</span>
                 </div>
+                <div class="analytics-kpis">
+                    <article class="analytics-kpi danger"><span class="analytics-kpi-label">Overdue</span><strong class="analytics-kpi-value" data-analytics="overdue">0</strong><span class="analytics-kpi-note">Active tasks past due</span></article>
+                    <article class="analytics-kpi primary"><span class="analytics-kpi-label">Due today</span><strong class="analytics-kpi-value" data-analytics="today">0</strong><span class="analytics-kpi-note">Active tasks due today</span></article>
+                    <article class="analytics-kpi success"><span class="analytics-kpi-label">Completed</span><strong class="analytics-kpi-value" data-analytics="completed7">0</strong><span class="analytics-kpi-note">Completed in 7 days</span></article>
+                    <article class="analytics-kpi"><span class="analytics-kpi-label">Completion rate</span><strong class="analytics-kpi-value" data-analytics="rate">0%</strong><span class="analytics-kpi-note">All-time task completion</span></article>
+                </div>
+                <div class="analytics-grid">
+                    <article class="analytics-card" aria-labelledby="trend-title">
+                        <div class="analytics-card-header"><h3 id="trend-title">Completion trend</h3><span>Created vs completed</span></div>
+                        <div id="completion-trend" class="trend-chart" aria-label="Seven day completion trend"></div>
+                    </article>
+                    <article class="analytics-card" aria-labelledby="productivity-title">
+                        <div class="analytics-card-header"><h3 id="productivity-title">Productivity</h3><span>Current workload</span></div>
+                        <div class="analytics-list">
+                            <div class="analytics-list-row"><span class="analytics-list-label">Active tasks</span><strong class="analytics-list-value" data-productivity="active">0</strong><div class="analytics-progress"><span style="width:0%"></span></div></div>
+                            <div class="analytics-list-row"><span class="analytics-list-label">Tasks with a due date</span><strong class="analytics-list-value" data-productivity="due">0</strong><div class="analytics-progress"><span style="width:0%"></span></div></div>
+                            <div class="analytics-list-row"><span class="analytics-list-label">Overdue workload</span><strong class="analytics-list-value" data-productivity="overdue">0</strong><div class="analytics-progress"><span style="width:0%"></span></div></div>
+                            <div class="analytics-list-row"><span class="analytics-list-label">Average completion time</span><strong class="analytics-list-value" data-productivity="avg">—</strong></div>
+                            <div class="analytics-list-row"><span class="analytics-list-label">Total completed</span><strong class="analytics-list-value" data-productivity="completed">0</strong></div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="stats-dashboard" aria-labelledby="stats-title">
+                <div class="stats-heading"><div><p class="section-eyebrow">Overview</p><h2 id="stats-title">Task Statistics</h2></div><span class="stats-live" aria-hidden="true">Live</span></div>
                 <div class="stats-grid">
                     <article class="stat-card"><span class="stat-label">Total tasks</span><strong id="stat-total" class="stat-value">0</strong></article>
                     <article class="stat-card"><span class="stat-label">Active</span><strong id="stat-active" class="stat-value">0</strong></article>
@@ -48,42 +73,17 @@
             </section>
 
             <form id="todo-form" class="todo-form">
-                <div class="input-group">
-                    <label for="todo-input">Add a task</label>
-                    <div class="input-row"><input type="text" id="todo-input" name="todo" placeholder="What needs to be done?" maxlength="100" autocomplete="off" required><button type="submit" class="add-button">Add Task</button></div>
-                    <div class="task-options">
-                        <div class="select-group"><label for="todo-priority">Priority</label><select id="todo-priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div>
-                        <div class="select-group"><label for="todo-category">Category</label><select id="todo-category" name="category"><option value="general" selected>General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div>
-                        <div class="date-group"><label for="todo-due-date">Due date</label><input type="date" id="todo-due-date" name="dueDate"></div>
-                    </div>
-                </div>
+                <div class="input-group"><label for="todo-input">Add a task</label><div class="input-row"><input type="text" id="todo-input" name="todo" placeholder="What needs to be done?" maxlength="100" autocomplete="off" required><button type="submit" class="add-button">Add Task</button></div><div class="task-options"><div class="select-group"><label for="todo-priority">Priority</label><select id="todo-priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div><div class="select-group"><label for="todo-category">Category</label><select id="todo-category" name="category"><option value="general" selected>General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div><div class="date-group"><label for="todo-due-date">Due date</label><input type="date" id="todo-due-date" name="dueDate"></div></div></div>
             </form>
 
-            <div class="todo-header">
-                <div><h2>Your Tasks</h2><p id="task-count" class="task-count">0 tasks remaining</p></div>
-                <div class="history-controls" aria-label="Task history"><button id="undo-button" class="history-button" type="button" title="Undo (Ctrl/Cmd + Z)" aria-label="Nothing to undo" disabled>↶</button><button id="redo-button" class="history-button" type="button" title="Redo (Ctrl/Cmd + Y)" aria-label="Nothing to redo" disabled>↷</button></div>
-            </div>
-
+            <div class="todo-header"><div><h2>Your Tasks</h2><p id="task-count" class="task-count">0 tasks remaining</p></div><div class="history-controls" aria-label="Task history"><button id="undo-button" class="history-button" type="button" title="Undo (Ctrl/Cmd + Z)" aria-label="Nothing to undo" disabled>↶</button><button id="redo-button" class="history-button" type="button" title="Redo (Ctrl/Cmd + Y)" aria-label="Nothing to redo" disabled>↷</button></div></div>
             <div class="task-search"><label for="task-search-input">Search tasks</label><input type="search" id="task-search-input" placeholder="Search by task name..." autocomplete="off"></div>
-            <div class="advanced-filters">
-                <div class="filter-select"><label for="filter-category">Category</label><select id="filter-category"><option value="all">All categories</option><option value="general">General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div>
-                <div class="filter-select"><label for="filter-priority">Priority</label><select id="filter-priority"><option value="all">All priorities</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
-            </div>
+            <div class="advanced-filters"><div class="filter-select"><label for="filter-category">Category</label><select id="filter-category"><option value="all">All categories</option><option value="general">General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div><div class="filter-select"><label for="filter-priority">Priority</label><select id="filter-priority"><option value="all">All priorities</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div></div>
             <div class="sort-controls"><div class="sort-select"><label for="task-sort">Sort tasks</label><select id="task-sort"><option value="manual">Custom order</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="due-soon">Due date: soonest</option><option value="due-late">Due date: latest</option><option value="priority-high">Priority: high to low</option><option value="priority-low">Priority: low to high</option></select></div></div>
             <div class="todo-controls"><div class="todo-filters" role="group" aria-label="Filter tasks"><button type="button" class="filter-button active" data-filter="all" aria-pressed="true">All</button><button type="button" class="filter-button" data-filter="active" aria-pressed="false">Active</button><button type="button" class="filter-button" data-filter="completed" aria-pressed="false">Completed</button></div><button type="button" class="clear-completed">Clear completed</button></div>
             <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
         </section>
     </main>
-
-    <script src="toast.js"></script>
-    <script src="script.js"></script>
-    <script src="edit.js"></script>
-    <script src="drag.js"></script>
-    <script src="history.js"></script>
-    <script src="theme.js"></script>
-    <script src="data-transfer.js"></script>
-    <script src="shortcuts.js"></script>
-    <script src="tags.js"></script>
-    <script src="pwa.js"></script>
+    <script src="toast.js"></script><script src="script.js"></script><script src="edit.js"></script><script src="drag.js"></script><script src="history.js"></script><script src="theme.js"></script><script src="data-transfer.js"></script><script src="shortcuts.js"></script><script src="tags.js"></script><script src="analytics.js"></script><script src="pwa.js"></script>
 </body>
 </html>
