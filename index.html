@@ -3,119 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta
-        name="description"
-        content="A simple and modern Todo List application built with HTML, CSS and JavaScript."
-    >
-
+    <meta name="description" content="A simple and modern Todo List application built with HTML, CSS and JavaScript.">
     <title>Todo List</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
     <main class="app">
-
-        <section class="todo-container" aria-labelledby="todo-title">
-
-            <header class="todo-header">
-                <p class="eyebrow">Stay organized</p>
-
-                <h1 id="todo-title">Todo List</h1>
-
-                <p class="todo-subtitle">
-                    Keep track of your tasks and get things done.
-                </p>
-            </header>
-
-
-            <form class="todo-form" id="todo-form">
-
+        <header class="app-header">
+            <p class="eyebrow">Simple productivity</p>
+            <h1>Todo List</h1>
+            <p class="subtitle">Organize your tasks and stay focused.</p>
+        </header>
+        <section class="todo-card" aria-label="Todo List">
+            <form id="todo-form" class="todo-form">
                 <div class="input-group">
-
-                    <label for="todo-input">
-                        Add a new task
-                    </label>
-
+                    <label for="todo-input">Add a task</label>
                     <div class="input-row">
-
-                        <input
-                            type="text"
-                            id="todo-input"
-                            name="todo"
-                            placeholder="What needs to be done?"
-                            maxlength="100"
-                            autocomplete="off"
-                            required
-                        >
-
-                        <button type="submit" class="add-button">
-                            Add Task
-                        </button>
-
+                        <input type="text" id="todo-input" name="todo" placeholder="What needs to be done?" maxlength="100" autocomplete="off" required>
+                        <button type="submit" class="add-button">Add Task</button>
                     </div>
-
                 </div>
-
             </form>
-
-
-            <section class="todo-section" aria-labelledby="tasks-title">
-
-                <div class="todo-section-header">
-
-                    <h2 id="tasks-title">Your Tasks</h2>
-
-                    <span class="task-count" id="task-count">
-                        0 tasks remaining
-                    </span>
-
+            <div class="todo-header">
+                <div>
+                    <h2>Your Tasks</h2>
+                    <p id="task-count" class="task-count">0 tasks remaining</p>
                 </div>
-
-
-                <div
-                    class="empty-state"
-                    id="empty-state"
-                    aria-live="polite"
-                >
-                    <h3>No tasks yet</h3>
-
-                    <p>
-                        Add your first task to get started.
-                    </p>
+            </div>
+            <div class="todo-controls">
+                <div class="todo-filters" role="group" aria-label="Filter tasks">
+                    <button type="button" class="filter-button active" data-filter="all" aria-pressed="true">All</button>
+                    <button type="button" class="filter-button" data-filter="active" aria-pressed="false">Active</button>
+                    <button type="button" class="filter-button" data-filter="completed" aria-pressed="false">Completed</button>
                 </div>
-
-
-                <ul
-                    class="todo-list"
-                    id="todo-list"
-                    aria-label="Todo items"
-                >
-                </ul>
-
-            </section>
-
-
-            <footer class="todo-footer">
-
-                <button
-                    type="button"
-                    class="clear-button"
-                    id="clear-completed"
-                >
-                    Clear completed
-                </button>
-
-            </footer>
-
+                <button type="button" class="clear-completed">Clear completed</button>
+            </div>
+            <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
         </section>
-
     </main>
-
-
     <script src="script.js"></script>
-
 </body>
 </html>
