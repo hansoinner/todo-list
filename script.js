@@ -2,6 +2,7 @@ const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const priorityInput = document.querySelector("#todo-priority");
 const categoryInput = document.querySelector("#todo-category");
+const dueDateInput = document.querySelector("#todo-due-date");
 const searchInput = document.querySelector("#task-search-input");
 const categoryFilter = document.querySelector("#filter-category");
 const priorityFilter = document.querySelector("#filter-priority");
@@ -44,7 +45,8 @@ function loadTodos() {
                 completed: Boolean(todo.completed),
                 priority: ["low", "medium", "high"].includes(todo.priority) ? todo.priority : "medium",
                 category: ["general", "work", "personal", "learning"].includes(todo.category) ? todo.category : "general",
-                createdAt: todo.createdAt || new Date().toISOString()
+                createdAt: todo.createdAt || new Date().toISOString(),
+                dueDate: isValidDateValue(todo.dueDate) ? todo.dueDate : ""
             };
         }).filter(function (todo) {
             return todo.text !== "";
@@ -55,23 +57,31 @@ function loadTodos() {
     }
 }
 
+function isValidDateValue(value) {
+    if (!value || typeof value !== "string") return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const date = new Date(`${value}T00:00:00`);
+    return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 function saveTodos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
 
-function createTodo(text, priority, category) {
+function createTodo(text, priority, category, dueDate) {
     return {
         id: Date.now() + Math.random(),
         text: text,
         completed: false,
         priority: priority,
         category: category,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        dueDate: dueDate || ""
     };
 }
 
-function addTodo(text, priority, category) {
-    todos.unshift(createTodo(text, priority, category));
+function addTodo(text, priority, category, dueDate) {
+    todos.unshift(createTodo(text, priority, category, dueDate));
     saveTodos();
     renderTodos();
 }
@@ -235,6 +245,27 @@ function formatCreatedDate(createdAt) {
     return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
 }
 
+function formatDueDate(dueDate) {
+    if (!isValidDateValue(dueDate)) return "";
+    const date = new Date(`${dueDate}T00:00:00`);
+    return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
+}
+
+function isOverdue(todo) {
+    if (todo.completed || !isValidDateValue(todo.dueDate)) return false;
+    const today = new Date();
+    const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    return todo.dueDate < todayValue;
+}
+
+function getDueDateMarkup(todo) {
+    if (!todo.dueDate) return "";
+    const overdue = isOverdue(todo);
+    const label = overdue ? "Overdue" : "Due";
+    const date = formatDueDate(todo.dueDate);
+    return `<span class="todo-due-date${overdue ? " overdue" : ""}">${label}: ${date}</span>`;
+}
+
 function renderEmptyState() {
     let title = "No tasks yet";
     let message = "Add your first task to get started.";
@@ -258,6 +289,7 @@ function createTodoElement(todo) {
     todoItem.classList.add("todo-item");
     todoItem.dataset.id = todo.id;
     if (todo.completed) todoItem.classList.add("completed");
+    if (isOverdue(todo)) todoItem.classList.add("overdue");
 
     todoItem.innerHTML = `
         <label class="todo-label">
@@ -269,6 +301,7 @@ function createTodoElement(todo) {
                     <span class="todo-category">${getCategoryLabel(todo.category)}</span>
                     <span class="todo-priority priority-${todo.priority}">${getPriorityLabel(todo.priority)}</span>
                     <span class="todo-date">${formatCreatedDate(todo.createdAt)}</span>
+                    ${getDueDateMarkup(todo)}
                 </span>
             </span>
         </label>
@@ -304,12 +337,14 @@ todoForm.addEventListener("submit", function (event) {
     const text = todoInput.value.trim();
     const priority = priorityInput.value;
     const category = categoryInput.value;
+    const dueDate = dueDateInput.value;
     if (text === "") return;
 
-    addTodo(text, priority, category);
+    addTodo(text, priority, category, dueDate);
     todoInput.value = "";
     priorityInput.value = "medium";
     categoryInput.value = "general";
+    dueDateInput.value = "";
     todoInput.focus();
 });
 
