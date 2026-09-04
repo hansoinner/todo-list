@@ -1,0 +1,91 @@
+/* =========================================================
+   COMPLETE TASK EDITOR
+========================================================= */
+
+.todo-editing {
+    gap: 9px;
+}
+
+.todo-edit-text {
+    width: 100%;
+}
+
+.todo-edit-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.todo-edit-field {
+    min-width: 0;
+}
+
+.todo-edit-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.todo-edit-field select,
+.todo-edit-field input {
+    width: 100%;
+    min-width: 0;
+    height: 36px;
+    padding: 0 9px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    outline: none;
+}
+
+.todo-edit-field select:focus,
+.todo-edit-field input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.todo-edit-tags {
+    grid-column: span 4;
+}
+
+.todo-edit-hint {
+    color: var(--muted);
+    font-size: 0.68rem;
+}
+
+.cancel-edit-button {
+    color: var(--muted);
+}
+
+@media (max-width: 700px) {
+    .todo-edit-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .todo-edit-tags {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .todo-item:has(.todo-editing) {
+        align-items: flex-start;
+    }
+
+    .todo-edit-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .todo-edit-tags {
+        grid-column: span 1;
+    }
+
+    .todo-item:has(.todo-editing) .todo-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
