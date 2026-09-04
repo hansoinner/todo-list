@@ -31,54 +31,23 @@
                 </div>
 
                 <div class="stats-grid">
-                    <article class="stat-card">
-                        <span class="stat-label">Total tasks</span>
-                        <strong id="stat-total" class="stat-value">0</strong>
-                    </article>
-                    <article class="stat-card">
-                        <span class="stat-label">Active</span>
-                        <strong id="stat-active" class="stat-value">0</strong>
-                    </article>
-                    <article class="stat-card">
-                        <span class="stat-label">Completed</span>
-                        <strong id="stat-completed" class="stat-value">0</strong>
-                    </article>
-                    <article class="stat-card stat-card-progress">
-                        <span class="stat-label">Completion rate</span>
-                        <strong id="stat-rate" class="stat-value">0%</strong>
-                        <div class="progress-track" aria-hidden="true">
-                            <div id="stat-progress" class="progress-bar"></div>
-                        </div>
-                    </article>
+                    <article class="stat-card"><span class="stat-label">Total tasks</span><strong id="stat-total" class="stat-value">0</strong></article>
+                    <article class="stat-card"><span class="stat-label">Active</span><strong id="stat-active" class="stat-value">0</strong></article>
+                    <article class="stat-card"><span class="stat-label">Completed</span><strong id="stat-completed" class="stat-value">0</strong></article>
+                    <article class="stat-card stat-card-progress"><span class="stat-label">Completion rate</span><strong id="stat-rate" class="stat-value">0%</strong><div class="progress-track" aria-hidden="true"><div id="stat-progress" class="progress-bar"></div></div></article>
                 </div>
 
                 <div class="breakdown-grid">
                     <article class="breakdown-card">
-                        <div class="breakdown-heading">
-                            <h3>By priority</h3>
-                            <span id="priority-total" class="breakdown-total">0</span>
-                        </div>
+                        <div class="breakdown-heading"><h3>By priority</h3><span id="priority-total" class="breakdown-total">0</span></div>
                         <div class="breakdown-list">
-                            <div class="breakdown-row">
-                                <span><span class="breakdown-dot priority-dot-low"></span>Low</span>
-                                <strong id="stat-low">0</strong>
-                            </div>
-                            <div class="breakdown-row">
-                                <span><span class="breakdown-dot priority-dot-medium"></span>Medium</span>
-                                <strong id="stat-medium">0</strong>
-                            </div>
-                            <div class="breakdown-row">
-                                <span><span class="breakdown-dot priority-dot-high"></span>High</span>
-                                <strong id="stat-high">0</strong>
-                            </div>
+                            <div class="breakdown-row"><span><span class="breakdown-dot priority-dot-low"></span>Low</span><strong id="stat-low">0</strong></div>
+                            <div class="breakdown-row"><span><span class="breakdown-dot priority-dot-medium"></span>Medium</span><strong id="stat-medium">0</strong></div>
+                            <div class="breakdown-row"><span><span class="breakdown-dot priority-dot-high"></span>High</span><strong id="stat-high">0</strong></div>
                         </div>
                     </article>
-
                     <article class="breakdown-card">
-                        <div class="breakdown-heading">
-                            <h3>By category</h3>
-                            <span id="category-total" class="breakdown-total">0</span>
-                        </div>
+                        <div class="breakdown-heading"><h3>By category</h3><span id="category-total" class="breakdown-total">0</span></div>
                         <div class="breakdown-list">
                             <div class="breakdown-row"><span>General</span><strong id="stat-general">0</strong></div>
                             <div class="breakdown-row"><span>Work</span><strong id="stat-work">0</strong></div>
@@ -96,39 +65,15 @@
                         <input type="text" id="todo-input" name="todo" placeholder="What needs to be done?" maxlength="100" autocomplete="off" required>
                         <button type="submit" class="add-button">Add Task</button>
                     </div>
-
                     <div class="task-options">
-                        <div class="select-group">
-                            <label for="todo-priority">Priority</label>
-                            <select id="todo-priority" name="priority">
-                                <option value="low">Low</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <div class="select-group">
-                            <label for="todo-category">Category</label>
-                            <select id="todo-category" name="category">
-                                <option value="general" selected>General</option>
-                                <option value="work">Work</option>
-                                <option value="personal">Personal</option>
-                                <option value="learning">Learning</option>
-                            </select>
-                        </div>
-                        <div class="date-group">
-                            <label for="todo-due-date">Due date</label>
-                            <input type="date" id="todo-due-date" name="dueDate">
-                        </div>
+                        <div class="select-group"><label for="todo-priority">Priority</label><select id="todo-priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div>
+                        <div class="select-group"><label for="todo-category">Category</label><select id="todo-category" name="category"><option value="general" selected>General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div>
+                        <div class="date-group"><label for="todo-due-date">Due date</label><input type="date" id="todo-due-date" name="dueDate"></div>
                     </div>
                 </div>
             </form>
 
-            <div class="todo-header">
-                <div>
-                    <h2>Your Tasks</h2>
-                    <p id="task-count" class="task-count">0 tasks remaining</p>
-                </div>
-            </div>
+            <div class="todo-header"><div><h2>Your Tasks</h2><p id="task-count" class="task-count">0 tasks remaining</p></div></div>
 
             <div class="task-search">
                 <label for="task-search-input">Search tasks</label>
@@ -136,23 +81,20 @@
             </div>
 
             <div class="advanced-filters">
-                <div class="filter-select">
-                    <label for="filter-category">Category</label>
-                    <select id="filter-category">
-                        <option value="all">All categories</option>
-                        <option value="general">General</option>
-                        <option value="work">Work</option>
-                        <option value="personal">Personal</option>
-                        <option value="learning">Learning</option>
-                    </select>
-                </div>
-                <div class="filter-select">
-                    <label for="filter-priority">Priority</label>
-                    <select id="filter-priority">
-                        <option value="all">All priorities</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
+                <div class="filter-select"><label for="filter-category">Category</label><select id="filter-category"><option value="all">All categories</option><option value="general">General</option><option value="work">Work</option><option value="personal">Personal</option><option value="learning">Learning</option></select></div>
+                <div class="filter-select"><label for="filter-priority">Priority</label><select id="filter-priority"><option value="all">All priorities</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+            </div>
+
+            <div class="sort-controls">
+                <div class="sort-select">
+                    <label for="task-sort">Sort tasks</label>
+                    <select id="task-sort">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="due-soon">Due date: soonest</option>
+                        <option value="due-late">Due date: latest</option>
+                        <option value="priority-high">Priority: high to low</option>
+                        <option value="priority-low">Priority: low to high</option>
                     </select>
                 </div>
             </div>
