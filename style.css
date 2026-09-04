@@ -18,6 +18,7 @@
     --danger: #dc2626;
     --danger-bg: #fef2f2;
     --success: #16a34a;
+    --warning: #d97706;
     --radius-sm: 10px;
     --radius: 14px;
     --radius-lg: 22px;
@@ -43,11 +44,13 @@ body {
 }
 
 button,
-input {
+input,
+select {
     font: inherit;
 }
 
-button {
+button,
+select {
     cursor: pointer;
 }
 
@@ -108,11 +111,15 @@ button:disabled {
     margin-bottom: 30px;
 }
 
-.input-group label {
+.input-group label,
+.select-group label {
     display: block;
-    margin-bottom: 9px;
     font-size: 0.86rem;
     font-weight: 800;
+}
+
+.input-group > label {
+    margin-bottom: 9px;
 }
 
 .input-row {
@@ -167,6 +174,40 @@ button:disabled {
 
 .add-button:active {
     transform: translateY(0);
+}
+
+.task-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.select-group label {
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 0.76rem;
+}
+
+.select-group select {
+    width: 100%;
+    height: 42px;
+    padding: 0 34px 0 11px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.select-group select:hover {
+    border-color: var(--border-strong);
+}
+
+.select-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .todo-header {
@@ -249,6 +290,7 @@ button:disabled {
 .edit-button:focus-visible,
 .delete-button:focus-visible,
 .cancel-button:focus-visible,
+.select-group select:focus-visible,
 .todo-label input[type="checkbox"]:focus-visible + .custom-checkbox {
     outline: 3px solid rgba(37, 99, 235, 0.2);
     outline-offset: 2px;
@@ -266,7 +308,7 @@ button:disabled {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 60px;
+    min-height: 72px;
     padding: 11px 12px;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -334,17 +376,75 @@ button:disabled {
     transform: rotate(45deg);
 }
 
+.todo-content {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .todo-text {
     min-width: 0;
     overflow-wrap: anywhere;
     font-size: 0.94rem;
-    font-weight: 600;
+    font-weight: 650;
 }
 
 .todo-item.completed .todo-text {
     color: var(--muted);
     text-decoration: line-through;
     text-decoration-thickness: 2px;
+}
+
+.todo-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.todo-category,
+.todo-priority,
+.todo-date {
+    display: inline-flex;
+    align-items: center;
+    min-height: 21px;
+    padding: 2px 7px;
+    border-radius: 999px;
+}
+
+.todo-category {
+    color: #475569;
+    background: #f1f5f9;
+}
+
+.todo-priority {
+    background: #f1f5f9;
+}
+
+.priority-low {
+    color: var(--success);
+    background: #f0fdf4;
+}
+
+.priority-medium {
+    color: var(--warning);
+    background: #fffbeb;
+}
+
+.priority-high {
+    color: var(--danger);
+    background: var(--danger-bg);
+}
+
+.todo-date {
+    padding-left: 0;
+    color: #94a3b8;
+    background: transparent;
 }
 
 .todo-actions {
@@ -459,6 +559,10 @@ button:disabled {
 
     .add-button {
         width: 100%;
+    }
+
+    .task-options {
+        grid-template-columns: 1fr;
     }
 
     .todo-controls {
