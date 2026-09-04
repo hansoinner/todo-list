@@ -7,6 +7,7 @@
     <meta name="description" content="A simple and modern Todo List application built with HTML, CSS and JavaScript.">
     <title>Todo List</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="drag.css">
 </head>
 
 <body>
@@ -89,6 +90,7 @@
                 <div class="sort-select">
                     <label for="task-sort">Sort tasks</label>
                     <select id="task-sort">
+                        <option value="manual">Custom order</option>
                         <option value="newest">Newest first</option>
                         <option value="oldest">Oldest first</option>
                         <option value="due-soon">Due date: soonest</option>
@@ -116,5 +118,6 @@
 
     <script src="script.js"></script>
     <script src="edit.js"></script>
+    <script src="drag.js"></script>
 </body>
 </html>
