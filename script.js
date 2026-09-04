@@ -2,6 +2,9 @@ const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const priorityInput = document.querySelector("#todo-priority");
 const categoryInput = document.querySelector("#todo-category");
+const searchInput = document.querySelector("#task-search-input");
+const categoryFilter = document.querySelector("#filter-category");
+const priorityFilter = document.querySelector("#filter-priority");
 const todoList = document.querySelector("#todo-list");
 const taskCount = document.querySelector("#task-count");
 const clearCompletedButton = document.querySelector(".clear-completed");
@@ -10,6 +13,9 @@ const filterButtons = document.querySelectorAll(".filter-button");
 const STORAGE_KEY = "todos";
 const todos = loadTodos();
 let currentFilter = "all";
+let searchTerm = "";
+let selectedCategory = "all";
+let selectedPriority = "all";
 
 function loadTodos() {
     try {
@@ -160,19 +166,18 @@ function clearCompleted() {
 }
 
 function getFilteredTodos() {
-    if (currentFilter === "active") {
-        return todos.filter(function (todo) {
-            return !todo.completed;
-        });
-    }
+    return todos.filter(function (todo) {
+        const matchesStatus =
+            currentFilter === "all" ||
+            (currentFilter === "active" && !todo.completed) ||
+            (currentFilter === "completed" && todo.completed);
 
-    if (currentFilter === "completed") {
-        return todos.filter(function (todo) {
-            return todo.completed;
-        });
-    }
+        const matchesSearch = todo.text.toLowerCase().includes(searchTerm);
+        const matchesCategory = selectedCategory === "all" || todo.category === selectedCategory;
+        const matchesPriority = selectedPriority === "all" || todo.priority === selectedPriority;
 
-    return todos;
+        return matchesStatus && matchesSearch && matchesCategory && matchesPriority;
+    });
 }
 
 function updateTaskCount() {
@@ -205,23 +210,12 @@ function setFilter(filter) {
 }
 
 function getPriorityLabel(priority) {
-    const labels = {
-        low: "Low",
-        medium: "Medium",
-        high: "High"
-    };
-
+    const labels = { low: "Low", medium: "Medium", high: "High" };
     return labels[priority] || labels.medium;
 }
 
 function getCategoryLabel(category) {
-    const labels = {
-        general: "General",
-        work: "Work",
-        personal: "Personal",
-        learning: "Learning"
-    };
-
+    const labels = { general: "General", work: "Work", personal: "Personal", learning: "Learning" };
     return labels[category] || labels.general;
 }
 
@@ -241,12 +235,13 @@ function renderEmptyState() {
     let title = "No tasks yet";
     let message = "Add your first task to get started.";
 
-    if (currentFilter === "active") {
+    if (todos.length > 0) {
+        title = "No matching tasks";
+        message = "Try changing your search or filters.";
+    } else if (currentFilter === "active") {
         title = "No active tasks";
         message = "All your tasks are completed.";
-    }
-
-    if (currentFilter === "completed") {
+    } else if (currentFilter === "completed") {
         title = "No completed tasks";
         message = "Completed tasks will appear here.";
     }
@@ -265,17 +260,11 @@ function createTodoElement(todo) {
     todoItem.classList.add("todo-item");
     todoItem.dataset.id = todo.id;
 
-    if (todo.completed) {
-        todoItem.classList.add("completed");
-    }
+    if (todo.completed) todoItem.classList.add("completed");
 
     todoItem.innerHTML = `
         <label class="todo-label">
-            <input
-                type="checkbox"
-                ${todo.completed ? "checked" : ""}
-                aria-label="Mark ${todo.text} as completed"
-            >
+            <input type="checkbox" ${todo.completed ? "checked" : ""} aria-label="Mark ${todo.text} as completed">
             <span class="custom-checkbox" aria-hidden="true"></span>
             <span class="todo-content">
                 <span class="todo-text"></span>
@@ -286,7 +275,6 @@ function createTodoElement(todo) {
                 </span>
             </span>
         </label>
-
         <div class="todo-actions">
             <button class="edit-button" type="button" aria-label="Edit ${todo.text}">Edit</button>
             <button class="delete-button" type="button" aria-label="Delete ${todo.text}">Delete</button>
@@ -295,19 +283,15 @@ function createTodoElement(todo) {
 
     todoItem.querySelector(".todo-text").textContent = todo.text;
 
-    const checkbox = todoItem.querySelector('input[type="checkbox"]');
-    const editButton = todoItem.querySelector(".edit-button");
-    const deleteButton = todoItem.querySelector(".delete-button");
-
-    checkbox.addEventListener("change", function () {
+    todoItem.querySelector('input[type="checkbox"]').addEventListener("change", function () {
         toggleTodo(todo.id);
     });
 
-    editButton.addEventListener("click", function () {
+    todoItem.querySelector(".edit-button").addEventListener("click", function () {
         editTodo(todo.id);
     });
 
-    deleteButton.addEventListener("click", function () {
+    todoItem.querySelector(".delete-button").addEventListener("click", function () {
         deleteTodo(todo.id);
     });
 
@@ -320,14 +304,11 @@ function renderTodos() {
 
     if (filteredTodos.length === 0) {
         renderEmptyState();
-        updateTaskCount();
-        updateClearCompletedButton();
-        return;
+    } else {
+        filteredTodos.forEach(function (todo) {
+            todoList.appendChild(createTodoElement(todo));
+        });
     }
-
-    filteredTodos.forEach(function (todo) {
-        todoList.appendChild(createTodoElement(todo));
-    });
 
     updateTaskCount();
     updateClearCompletedButton();
@@ -347,6 +328,21 @@ todoForm.addEventListener("submit", function (event) {
     priorityInput.value = "medium";
     categoryInput.value = "general";
     todoInput.focus();
+});
+
+searchInput.addEventListener("input", function () {
+    searchTerm = searchInput.value.trim().toLowerCase();
+    renderTodos();
+});
+
+categoryFilter.addEventListener("change", function () {
+    selectedCategory = categoryFilter.value;
+    renderTodos();
+});
+
+priorityFilter.addEventListener("change", function () {
+    selectedPriority = priorityFilter.value;
+    renderTodos();
 });
 
 clearCompletedButton.addEventListener("click", clearCompleted);
